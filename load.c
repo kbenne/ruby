@@ -10,6 +10,9 @@
 #include "probes.h"
 #include "node.h"
 
+int rb_hasFile(const char *t_filename);
+int rb_require_embedded(const char *t_filename);
+
 VALUE ruby_dln_librefs;
 
 #define numberof(array) (int)(sizeof(array) / sizeof((array)[0]))
@@ -1023,9 +1026,13 @@ rb_require_safe(VALUE fname, int safe)
 VALUE
 rb_require(const char *fname)
 {
+  if ( rb_hasFile(fname) ) {
+    return rb_require_embedded(fname);
+  } else {
     VALUE fn = rb_str_new2(fname);
     OBJ_FREEZE(fn);
     return rb_require_safe(fn, rb_safe_level());
+  }
 }
 
 static int
