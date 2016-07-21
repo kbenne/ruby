@@ -10,8 +10,21 @@
 #include "probes.h"
 #include "node.h"
 
-int rb_hasFile(const char *t_filename);
-int rb_require_embedded(const char *t_filename);
+extern int rb_hasFile(const char *t_filename);
+extern int rb_require_embedded(const char *t_filename);
+
+#if defined _WIN32
+int default_hasFile(const char *t_filename) {
+  return 0;
+}
+
+int default_require_embedded(const char *t_filename) {
+  return 0;
+}
+
+#pragma comment(linker, "/alternatename:rb_hasFile=default_hasFile")
+#pragma comment(linker, "/alternatename:rb_require_embedded=default_require_embedded")
+#endif
 
 VALUE ruby_dln_librefs;
 
